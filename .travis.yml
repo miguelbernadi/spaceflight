@@ -1,10 +1,18 @@
 language: go
-
 go:
-  - 1.8
-  - 1.7
-  - master
-
+- 1.8
+- 1.7
+- master
 addons:
-    code_climate:
-        repo_token: 26612c1ca9fe1abab4211bafa1c195800f9f34a76ac9aacdf81e4910c41b5f95
+  code_climate:
+    repo_token: 26612c1ca9fe1abab4211bafa1c195800f9f34a76ac9aacdf81e4910c41b5f95
+install:
+  - go build -o dextre ./mss/dextre/cmd/main.go
+deploy:
+  provider: releases
+  api_key:
+    secure: I90tBQLyUxmk/D8Z/ihIZFF1BFKv31zU02d8lxVnFzpyAvirA6+bCTSQ0v3M4kSirkY2i51sNbVnizc9swsbXTWtQDDB+v8YcyoYhpbq8AFTppH74YqVuMIfFYoMQZqr0EGmZuZGI6HI9I0CCOOD7QEj+aTC+3oqXcxI0OjAoDT5hbzD01LVNcwivPI1rdEDzw7rikUHg5uTxRa/g+76s4eYTDhi8ANIQpkzNXFZdCEZzQnHd1yiJ67bG2BahgJ1mvFENLcgWVR+wZcXCmtDIkEqZVx8jKA3WC0A1uqrdk0nl8hCEF6lsetHF9qOPA90jtZ2MSw80yAJli4KJaDj+cEBkkDP+SW7XQRwy8dXhsWIra3MDbsWClrwSz5o0U6+Y4oyKgmEXNzoxlb37D7mU6c5w6r1GQH7b6urzBmuo0NxPSdJ5mwM3cJ3lJ8U7BwjAhfOBh3OW4vSQaBQSHtABURca6+1zesyIRxLWnw9VFvbkTVQEJUGYzMHGNDEJaRMdT5NbO99opeAgZBCRk4YA+NesxXXCuPVstc9OUvPEr3z7u6zyB2QWHMGhcsXKr/kEAolO0sd69tfUk/p7USdrMPKcbPHpEkr46r87Ev2uBZ15ACtq3mcNKH7XNgduCiUpl+7vYzOTZXM/9jyJM9rdF5JWeRx8pkr4YIyMnQvxdE=
+  file: dextre
+  on:
+    repo: miguelbernadi/spaceflight
+    branch: develop
