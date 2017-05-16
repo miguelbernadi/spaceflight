@@ -6,6 +6,9 @@ go:
 addons:
   code_climate:
     repo_token: 26612c1ca9fe1abab4211bafa1c195800f9f34a76ac9aacdf81e4910c41b5f95
+os:
+  - osx
+  - linux
 before_deploy:
   - go build -o dextre ./mss/dextre/cmd/main.go
 deploy:
@@ -15,5 +18,6 @@ deploy:
   file: dextre
   skip_cleanup: true
   on:
+    tags: false
     repo: miguelbernadi/spaceflight
     branch: develop
