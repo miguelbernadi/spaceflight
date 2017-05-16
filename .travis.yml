@@ -6,8 +6,6 @@ go:
 addons:
   code_climate:
     repo_token: 26612c1ca9fe1abab4211bafa1c195800f9f34a76ac9aacdf81e4910c41b5f95
-install:
-  - go install -o dextre ./mss/dextre/cmd/main.go
 deploy:
   provider: releases
   api_key:
