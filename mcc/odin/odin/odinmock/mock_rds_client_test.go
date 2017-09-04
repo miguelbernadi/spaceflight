@@ -251,12 +251,9 @@ func (m *mockRDSClient) CreateDBInstance(
 	result *rds.CreateDBInstanceOutput,
 	err error,
 ) {
+	// Validate input params
 	if err = inputParams.Validate(); err != nil {
 		return
-	}
-	az := aws.String("us-east-1c")
-	if inputParams.AvailabilityZone != nil {
-		az = inputParams.AvailabilityZone
 	}
 	if inputParams.MasterUsername == nil ||
 		*inputParams.MasterUsername == "" {
@@ -274,28 +271,45 @@ func (m *mockRDSClient) CreateDBInstance(
 		err = errors.New("Specify size between 5 and 6144")
 		return
 	}
-	region := trimLast(*az)
+
+	// Verify if case is in Map
 	id := inputParams.DBInstanceIdentifier
-	instance := rds.DBInstance{
-		AllocatedStorage: inputParams.AllocatedStorage,
-		AvailabilityZone: az,
-		DBInstanceArn: aws.String(
-			fmt.Sprintf(
-				"arn:aws:rds:%s:0:db:%s",
-				region,
-				id,
+	tc, ok := createInstanceCaseMap[*id]
+	if !ok {
+		// Not in Map, handle the old way
+		az := aws.String("us-east-1c")
+		if inputParams.AvailabilityZone != nil {
+			az = inputParams.AvailabilityZone
+		}
+		region := trimLast(*az)
+		instance := rds.DBInstance{
+			AllocatedStorage: inputParams.AllocatedStorage,
+			AvailabilityZone: az,
+			DBInstanceArn: aws.String(
+				fmt.Sprintf(
+					"arn:aws:rds:%s:0:db:%s",
+					region,
+					id,
+				),
 			),
-		),
-		DBInstanceIdentifier: id,
-		DBInstanceStatus:     aws.String("creating"),
-		Engine:               inputParams.Engine,
+			DBInstanceIdentifier: id,
+			DBInstanceStatus:     aws.String("creating"),
+			Engine:               inputParams.Engine,
+		}
+		m.dbInstances = append(
+			m.dbInstances,
+			&instance,
+		)
+		result = &rds.CreateDBInstanceOutput{
+			DBInstance: &instance,
+		}
+		return
 	}
-	m.dbInstances = append(
-		m.dbInstances,
-		&instance,
-	)
-	result = &rds.CreateDBInstanceOutput{
-		DBInstance: &instance,
+	// In Map, return Internal
+	result, ok = tc.Internal["CreateDBInstance"].(*rds.CreateDBInstanceOutput)
+	if !ok {
+		err = fmt.Errorf("Instance %s already exists", *id)
+		return
 	}
 	return
 }

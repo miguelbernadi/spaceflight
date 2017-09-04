@@ -119,3 +119,65 @@ func TestCreateInstance(t *testing.T) {
 		)
 	}
 }
+
+type createInstanceCaseInput struct {
+	name         string
+	identifier   string
+	instanceType string
+	password     string
+	user         string
+	size         int64
+}
+
+type createInstanceCaseOutput struct {
+	out string
+	err error
+}
+
+var createInstanceCaseMap = map[string]struct {
+	Input    createInstanceCaseInput
+	Output   testCase
+	Internal map[string]interface{}
+}{
+	"CreateExistingInstanceFail": {
+		createInstanceCaseInput{
+			name:         "CreateExistingInstanceFail",
+			identifier:   "CreateExistingInstanceFail",
+			instanceType: "db.m1.small",
+			user:         "master",
+			password:     "master",
+			size:         5,
+		},
+		testCase{
+			expected:      "",
+			expectedError: "Instance CreateExistingInstanceFail already exists",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": nil,
+		},
+	},
+}
+
+func TestCreateInstanceWithMap(t *testing.T) {
+	svc := newMockRDSClient()
+	odin.Duration = time.Duration(0)
+	for _, test := range createInstanceCaseMap {
+		t.Run(
+			test.Input.name,
+			func(t *testing.T) {
+				params := odin.CreateParams{
+					InstanceType: test.Input.instanceType,
+					User:         test.Input.user,
+					Password:     test.Input.password,
+					Size:         test.Input.size,
+				}
+				actual, err := odin.CreateInstance(
+					test.Input.identifier,
+					params,
+					svc,
+				)
+				test.Output.check(actual, err, t)
+			},
+		)
+	}
+}
