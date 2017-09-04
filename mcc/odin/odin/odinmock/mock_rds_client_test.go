@@ -210,37 +210,53 @@ func (m *mockRDSClient) DescribeDBInstances(
 	result *rds.DescribeDBInstancesOutput,
 	err error,
 ) {
+	// Search for Map entry
 	id := describeParams.DBInstanceIdentifier
-	index, instance, err := m.FindInstance(*id)
-	if err != nil {
+	tc, ok := createInstanceCaseMap[*id]
+	if !ok {
+		// No Map entry, handle old way
+		var index int
+		var instance *rds.DBInstance
+		index, instance, err = m.FindInstance(*id)
+		if err != nil {
+			return
+		}
+		if *instance.DBInstanceStatus == "deleting" {
+			m.dbInstances = append(
+				m.dbInstances[:index],
+				m.dbInstances[index+1:]...,
+			)
+		}
+		if *instance.DBInstanceStatus == "creating" {
+			az := *instance.AvailabilityZone
+			region := trimLast(az)
+			endpoint := fmt.Sprintf(
+				"%s.0.%s.rds.amazonaws.com",
+				*id,
+				region,
+			)
+			port := int64(5432)
+			instance.Endpoint = &rds.Endpoint{
+				Address: &endpoint,
+				Port:    &port,
+			}
+			*instance.DBInstanceStatus = "available"
+		}
+		result = &rds.DescribeDBInstancesOutput{
+			DBInstances: []*rds.DBInstance{
+				instance,
+			},
+		}
 		return
 	}
-	if *instance.DBInstanceStatus == "deleting" {
-		m.dbInstances = append(
-			m.dbInstances[:index],
-			m.dbInstances[index+1:]...,
-		)
+	// Confirm Map entry is valid
+	result, ok = tc.Internal["DescribeDBInstances"].(*rds.DescribeDBInstancesOutput)
+	if !ok {
+		err = fmt.Errorf("")
+		return
 	}
-	if *instance.DBInstanceStatus == "creating" {
-		az := *instance.AvailabilityZone
-		region := trimLast(az)
-		endpoint := fmt.Sprintf(
-			"%s.0.%s.rds.amazonaws.com",
-			*id,
-			region,
-		)
-		port := int64(5432)
-		instance.Endpoint = &rds.Endpoint{
-			Address: &endpoint,
-			Port:    &port,
-		}
-		*instance.DBInstanceStatus = "available"
-	}
-	result = &rds.DescribeDBInstancesOutput{
-		DBInstances: []*rds.DBInstance{
-			instance,
-		},
-	}
+	// Update instance state
+	*result.DBInstances[0].DBInstanceStatus = "available"
 	return
 }
 

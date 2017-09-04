@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/poka-yoke/spaceflight/mcc/odin/odin"
 )
 
@@ -18,19 +20,6 @@ type createInstanceCase struct {
 }
 
 var createInstanceCases = []createInstanceCase{
-	// Creating simple instance
-	{
-		testCase: testCase{
-			expected:      "test1.0.us-east-1.rds.amazonaws.com",
-			expectedError: "",
-		},
-		name:         "Creating simple instance",
-		identifier:   "test1",
-		instanceType: "db.m1.small",
-		user:         "master",
-		password:     "master",
-		size:         5,
-	},
 	// Fail because empty user
 	{
 		testCase: testCase{
@@ -154,6 +143,42 @@ var createInstanceCaseMap = map[string]struct {
 		},
 		map[string]interface{}{
 			"CreateDBInstance": nil,
+		},
+	},
+	"CreateSimpleInstanceSuccess": {
+		createInstanceCaseInput{
+			name:         "CreateSimpleInstanceSuccess",
+			identifier:   "CreateSimpleInstanceSuccess",
+			instanceType: "db.m1.small",
+			user:         "master",
+			password:     "master",
+			size:         5,
+		},
+		testCase{
+			expected:      "CreateSimpleInstanceSuccess.0.us-east-1.rds.amazonaws.com",
+			expectedError: "",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": &rds.CreateDBInstanceOutput{
+				DBInstance: &rds.DBInstance{
+					AllocatedStorage:     aws.Int64(5),
+					AvailabilityZone:     aws.String("us-east-1"),
+					DBInstanceIdentifier: aws.String("CreateSimpleInstanceSuccess"),
+					DBInstanceStatus:     aws.String("creating"),
+					Engine:               aws.String(""),
+				},
+			},
+			"DescribeDBInstances": &rds.DescribeDBInstancesOutput{
+				DBInstances: []*rds.DBInstance{
+					{
+						DBInstanceStatus: aws.String("creating"),
+						Endpoint: &rds.Endpoint{
+							Address: aws.String("CreateSimpleInstanceSuccess.0.us-east-1.rds.amazonaws.com"),
+							Port:    aws.Int64(5432),
+						},
+					},
+				},
+			},
 		},
 	},
 }
