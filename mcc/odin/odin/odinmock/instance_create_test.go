@@ -9,106 +9,6 @@ import (
 	"github.com/poka-yoke/spaceflight/mcc/odin/odin"
 )
 
-type createInstanceCase struct {
-	testCase
-	name         string
-	identifier   string
-	instanceType string
-	password     string
-	user         string
-	size         int64
-}
-
-var createInstanceCases = []createInstanceCase{
-	// Fail because empty user
-	{
-		testCase: testCase{
-			expected:      "",
-			expectedError: "Specify Master User",
-		},
-		name:         "Fail because empty user",
-		identifier:   "test1",
-		instanceType: "db.m1.small",
-		user:         "",
-		password:     "master",
-		size:         5,
-	},
-	// Fail because empty password
-	{
-		testCase: testCase{
-			expected:      "",
-			expectedError: "Specify Master User Password",
-		},
-		name:         "Fail because empty password",
-		identifier:   "test1",
-		instanceType: "db.m1.small",
-		user:         "master",
-		password:     "",
-		size:         5,
-	},
-	// Fail because non-present size
-	{
-		testCase: testCase{
-			expected:      "",
-			expectedError: "Specify size between 5 and 6144",
-		},
-		name:         "Fail because non-present size",
-		identifier:   "test1",
-		instanceType: "db.m1.small",
-		user:         "master",
-		password:     "master",
-	},
-	// Fail because too small size
-	{
-		testCase: testCase{
-			expected:      "",
-			expectedError: "Specify size between 5 and 6144",
-		},
-		name:         "Fail because too small size",
-		identifier:   "test1",
-		instanceType: "db.m1.small",
-		user:         "master",
-		password:     "master",
-	},
-	// Fail because too big size
-	{
-		testCase: testCase{
-			expected:      "",
-			expectedError: "Specify size between 5 and 6144",
-		},
-		name:         "Fail because too big size",
-		identifier:   "test1",
-		instanceType: "db.m1.small",
-		user:         "master",
-		password:     "master",
-		size:         6145,
-	},
-}
-
-func TestCreateInstance(t *testing.T) {
-	svc := newMockRDSClient()
-	odin.Duration = time.Duration(0)
-	for _, test := range createInstanceCases {
-		t.Run(
-			test.name,
-			func(t *testing.T) {
-				params := odin.CreateParams{
-					InstanceType: test.instanceType,
-					User:         test.user,
-					Password:     test.password,
-					Size:         test.size,
-				}
-				actual, err := odin.CreateInstance(
-					test.identifier,
-					params,
-					svc,
-				)
-				test.check(actual, err, t)
-			},
-		)
-	}
-}
-
 type createInstanceCaseInput struct {
 	name         string
 	identifier   string
@@ -179,6 +79,88 @@ var createInstanceCaseMap = map[string]struct {
 					},
 				},
 			},
+		},
+	},
+	"CreateEmptyUserFail": {
+		createInstanceCaseInput{
+			name:         "CreateEmptyUserFail",
+			identifier:   "CreateEmptyUserFail",
+			instanceType: "db.m1.small",
+			user:         "",
+			password:     "master",
+			size:         5,
+		},
+		testCase{
+			expected:      "",
+			expectedError: "Specify Master User",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": nil,
+		},
+	},
+	"CreateEmptyPasswordFail": {
+		createInstanceCaseInput{
+			name:         "CreateEmptyPasswordFail",
+			identifier:   "CreateEmptyPasswordFail",
+			instanceType: "db.m1.small",
+			user:         "master",
+			password:     "",
+			size:         5,
+		},
+		testCase{
+			expected:      "",
+			expectedError: "Specify Master User Password",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": nil,
+		},
+	},
+	"CreateAbsentSizeFail": {
+		createInstanceCaseInput{
+			name:         "CreateAbsentSizeFail",
+			identifier:   "CreateAbsentSizeFail",
+			instanceType: "db.m1.small",
+			user:         "master",
+			password:     "master",
+		},
+		testCase{
+			expected:      "",
+			expectedError: "Specify size between 5 and 6144",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": nil,
+		},
+	},
+	"CreateTooSmallFail": {
+		createInstanceCaseInput{
+			name:         "CreateTooSmallFail",
+			identifier:   "CreateTooSmallFail",
+			instanceType: "db.m1.small",
+			user:         "master",
+			password:     "master",
+		},
+		testCase{
+			expected:      "",
+			expectedError: "Specify size between 5 and 6144",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": nil,
+		},
+	},
+	"CreateTooBigFail": {
+		createInstanceCaseInput{
+			name:         "CreateTooBigFail",
+			identifier:   "CreateTooBigFail",
+			instanceType: "db.m1.small",
+			user:         "master",
+			password:     "master",
+		},
+		testCase{
+			expected:      "",
+			expectedError: "Specify size between 5 and 6144",
+		},
+		map[string]interface{}{
+			"CreateDBInstance": nil,
 		},
 	},
 }
