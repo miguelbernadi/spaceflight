@@ -62,7 +62,7 @@ func TestCloneInstance(t *testing.T) {
 			test.name,
 			func(t *testing.T) {
 				if test.from != "" {
-					svc.AddSnapshots(test.snapshots)
+					svc.addSnapshots(test.snapshots)
 				}
 				createParams := odin.CreateParams{
 					InstanceType: test.instanceType,

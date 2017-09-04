@@ -43,7 +43,7 @@ func (m *mockRDSClient) TakeFinalSnapshot(
 		}
 		identifier := params.DBInstanceIdentifier
 		snapshotID := params.FinalDBSnapshotIdentifier
-		m.AddSnapshots([]*rds.DBSnapshot{
+		m.addSnapshots([]*rds.DBSnapshot{
 			{
 				DBInstanceIdentifier: identifier,
 				DBSnapshotIdentifier: snapshotID,
@@ -164,8 +164,8 @@ func (m *mockRDSClient) AddInstances(
 	)
 }
 
-// AddSnapshots add a list of snapshots to the mock
-func (m *mockRDSClient) AddSnapshots(
+// addSnapshots add a list of snapshots to the mock
+func (m *mockRDSClient) addSnapshots(
 	snapshots []*rds.DBSnapshot,
 ) {
 	m.dbSnapshots = []*rds.DBSnapshot{}

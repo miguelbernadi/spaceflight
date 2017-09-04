@@ -47,7 +47,7 @@ func TestGetLastSnapshot(t *testing.T) {
 		t.Run(
 			test.name,
 			func(t *testing.T) {
-				svc.AddSnapshots(test.snapshots)
+				svc.addSnapshots(test.snapshots)
 				actual, err := odin.GetLastSnapshot(
 					test.identifier,
 					svc,

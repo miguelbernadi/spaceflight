@@ -74,7 +74,7 @@ func TestGetRestoreDBInput(t *testing.T) {
 		t.Run(
 			test.name,
 			func(t *testing.T) {
-				svc.AddSnapshots(test.snapshots)
+				svc.addSnapshots(test.snapshots)
 				params := test.params
 				actual, err := params.GetRestoreDBInput(
 					test.identifier,
@@ -127,7 +127,7 @@ func TestRestoreInstance(t *testing.T) {
 			test.name,
 			func(t *testing.T) {
 				if test.from != "" {
-					svc.AddSnapshots(test.snapshots)
+					svc.addSnapshots(test.snapshots)
 				}
 				params := odin.RestoreParams{
 					InstanceType:         test.instanceType,
