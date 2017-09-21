@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "105c188f_16e564c0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1012436
+      },
+      "writtenOn": "2017-09-21T20:37:32Z",
+      "side": 1,
+      "message": "Why should we unexport it? What\u0027s the issue and how does this solve it?",
+      "revId": "3f8070c2b3a69fc3fede84f2db7b81865f131669",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
