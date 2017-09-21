@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76686cf1_c00e5166",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1012436
+      },
+      "writtenOn": "2017-09-21T20:44:26Z",
+      "side": 1,
+      "message": "Description of the changes? Which params and why? The message is undescriptive of the motivation.",
+      "revId": "7c8d1dfa4b63efe780c5c48128081e7ce6cb3657",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
