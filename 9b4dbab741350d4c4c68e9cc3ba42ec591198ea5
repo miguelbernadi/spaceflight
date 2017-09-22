@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0bbd811_e1df187c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1012436
+      },
+      "writtenOn": "2017-09-22T15:00:15Z",
+      "side": 1,
+      "message": "Hola holita, vecinito!",
+      "revId": "9b4dbab741350d4c4c68e9cc3ba42ec591198ea5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
